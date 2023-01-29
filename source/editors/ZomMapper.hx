@@ -24,13 +24,11 @@ class ZomMapper extends BeatHandler
 
 	override public function create()
 	{
-		FlxG.sound.playMusic(AssetPaths.music('Test'));
+		FlxG.sound.playMusic(AssetPaths.music('SliceNDice'));
 		FlxG.sound.music.pause();
 
-		zomGrid = new FlxSprite().makeGraphic(40, 40 * 16, FlxColor.BLUE);
+		zomGrid = new FlxSprite().makeGraphic(40, Std.int(FlxG.sound.music.length), FlxColor.BLUE);
 		add(zomGrid);
-
-		zomGrid.scale.y = Std.int(FlxG.sound.music.length);
 
 		zombies = new FlxTypedGroup<Zomboyz>();
 		add(zombies);
@@ -55,7 +53,7 @@ class ZomMapper extends BeatHandler
 	override public function update(elapsed:Float)
 	{
 		Conductor.time = FlxG.sound.music.time;
-		Conductor.setBPM(180);
+		Conductor.setBPM(115);
 
 		if (FlxG.mouse.overlaps(zomGrid))
 		{
@@ -67,14 +65,10 @@ class ZomMapper extends BeatHandler
 
 		if (FlxG.keys.justPressed.SPACE && FlxG.sound.music.playing)
 			FlxG.sound.music.pause();
-
-		if (FlxG.keys.justPressed.SPACE && !FlxG.sound.music.playing)
+		else
 			FlxG.sound.music.play();
 
-		if (beat % 4 == 0 && FlxG.sound.music.playing)
-		{
-			timeLine.y += Conductor.bpm / 2;
-		}
+		timeLine.y = FlxG.sound.music.time;
 
 		if (FlxG.keys.justPressed.ENTER)
 		{

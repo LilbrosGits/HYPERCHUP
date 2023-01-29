@@ -2,11 +2,13 @@ package;
 
 import data.AssetPaths;
 import data.music.*;
+import data.music.Song;
 import editors.ZomMapper;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
+import haxe.Json;
 import obj.*;
 
 class PlayState extends BeatHandler
@@ -14,6 +16,8 @@ class PlayState extends BeatHandler
 	var bbz:FlxTypedGroup<Zomboyz>;
 
 	var killLine:FlxSprite;
+
+	var song:Song;
 
 	var daZombss:Array<Zomboyz> = [];
 
@@ -26,17 +30,17 @@ class PlayState extends BeatHandler
 		persistentDraw = true;
 		persistentUpdate = true;
 
-		FlxG.sound.playMusic(AssetPaths.music('Test'));
-		Conductor.setBPM(180);
+		song = new Song('SliceNDice');
+
+		FlxG.sound.playMusic(AssetPaths.music(song.songData.song));
+		Conductor.setBPM(song.songData.bpm);
 
 		bbz = new FlxTypedGroup<Zomboyz>();
 		add(bbz);
 
-		daZombss = ZomMapper.zombieArr;
-
-		for (i in 0...daZombss.length)
+		for (i in 0...song.songData.zombies.length)
 		{
-			var zomb:Zomboyz = new Zomboyz(FlxG.width + daZombss[i].y * Conductor.bpm / 100, 0);
+			var zomb:Zomboyz = new Zomboyz(FlxG.width - song.songData.zombies[i].y /** Conductor.bpm / 100*/, 0);
 			bbz.add(zomb);
 		}
 
@@ -64,6 +68,8 @@ class PlayState extends BeatHandler
 				else
 					badTime = 0;
 			});
+
+			// FlxG.sound.play(AssetPaths.randomSound('chupNoises/chupgrunt_', 1, 14), 1);
 		}
 
 		rankTxt.text = Std.string(badTime);
